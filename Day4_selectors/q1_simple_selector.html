@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Selector Assignment</title>
+  <style>
+    * {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #header, #footer {
+      margin: 20px;
+      padding: 10px;
+    }
+    #header {
+      background-color: #1e1e1e;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #007BFF; 
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: white;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .nav-link:hover {
+      color: #007BFF;
+    }
+
+    nav ul li:first-child .nav-link {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    .buy {
+      color: #007BFF;
+    }
+
+    #footer {
+      background-color: #f0f0f0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <div class="logo"><span>Be</span>blog</div>
+    <nav>
+      <ul>
+        <li><a href="#" class="nav-link">Home</a></li>
+        <li><a href="#" class="nav-link">Web design</a></li>
+        <li><a href="#" class="nav-link">WordPress</a></li>
+        <li><a href="#" class="nav-link">About us</a></li>
+        <li><a href="#" class="nav-link">BeAdvice</a></li>
+        <li><a href="#" class="nav-link buy">Buy BeTheme</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <p style="padding: 20px;">Welcome to BeBlog! Explore our content and discover great design tips.</p>
+  </main>
+
+  <footer id="footer">
+    <p>&copy; 2025 BeBlog. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Masai Course Boxes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: poppins;
+      background-color: #f4f4f4;
+      padding: 40px;
+    }
+
+    .course-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .course-box {
+      width: 375px;
+      border: 1px solid #ccc;
+      padding: 20px;
+
+      border-radius: 12px;
+      background-color: #fff;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .course-box:hover {
+      background-color: #f11e1e;
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .course-box > .logo {
+      width: 100px;
+      margin-bottom: 15px;
+    }
+
+    .course-details h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .course-details .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #0077cc;
+    }
+
+    .course-details p {
+      margin-bottom: 6px;
+    }
+
+    .buttons {
+      margin-top: 10px;
+    }
+
+    .buttons > button {
+      margin-right: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      color: rgb(14, 13, 13);
+      transition: background-color 0.3s ease;
+    }
+
+    .buttons > button:hover {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <section class="course-container">
+    <div class="course-box">
+      <img src="iim_sirmaur.jpeg" alt="IIM Sirmaur Logo" class="logo">
+      <div class="course-details">
+        <h2>IIM Sirmaur</h2>
+        <p class="title">EDGE: Essentials of Data Analytics, Gen AI & Execution</p>
+        <p><strong>Duration:</strong> 06 months</p>
+        <p><strong>Mode:</strong> Online</p>
+        <p><strong>Qualifier test:</strong> 12th Nov 2025</p>
+        <div class="buttons">
+          <button>Learn more</button>
+          <button>Brochure</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-box">
+      <img src="iit_patna.jpeg" alt="IIT Patna Logo" class="logo">
+      <div class="course-details">
+        <h2>Vishlesan i-Hub IIT Patna</h2>
+        <p class="title">Product Management and Agentic AI</p>
+        <p><strong>Duration:</strong> 06 months</p>
+        <p><strong>Mode:</strong> Online</p>
+        <p><strong>Qualifier test:</strong> 12th Nov 2025</p>
+        <div class="buttons">
+          <button>Learn more</button>
+          <button>Brochure</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-box">
+      <img src="iit_patna.jpeg" alt="IIT Patna Logo" class="logo">
+      <div class="course-details">
+        <h2>Vishlesan i-Hub IIT Patna</h2>
+        <p class="title">Certification Program in Data Analytics with Gen & Agentic AI</p>
+        <p><strong>Duration:</strong> 06 months</p>
+        <p><strong>Mode:</strong> Online</p>
+        <p><strong>Qualifier test:</strong> 9th Nov 2025</p>
+        <div class="buttons">
+          <button>Learn more</button>
+          <button>Brochure</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-box">
+      <img src="iim_tiruchir.jpeg" alt="IIM Trichy Logo" class="logo">
+      <div class="course-details">
+        <h2>IIM Trichy</h2>
+        <p class="title">Product Management in the Agentic AI Era</p>
+        <p><strong>Duration:</strong> 06 months</p>
+        <p><strong>Mode:</strong> Online</p>
+        <p><strong>Qualifier test:</strong> 12th Nov 2025</p>
+        <div class="buttons">
+          <button>Learn more</button>
+          <button>Brochure</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-box">
+      <img src="ihub.jpeg" alt="IIT Roorkee Logo" class="logo">
+      <div class="course-details">
+        <h2>iHUB DivyaSampark, IIT Roorkee</h2>
+        <p class="title">Future-Ready Product Management with Applied AI Program</p>
+        <p><strong>Duration:</strong> 06 months</p>
+        <p><strong>Mode:</strong> Online</p>
+        <p><strong>Qualifier test:</strong> 12th Nov 2025</p>
+        <div class="buttons">
+          <button>Learn more</button>
+          <button>Brochure</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-box">
+      <img src="nmims.jpeg" alt="NMIMS Logo" class="logo">
+      <div class="course-details">
+        <h2>NMIMS CDOE</h2>
+        <p class="title">Online MBA</p>
+        <p><strong>Duration:</strong> 02 Years</p>
+        <p><strong>Mode:</strong> Online</p>
+        <p><strong>Qualifier test:</strong> 12th Nov 2025</p>
+        <div class="buttons">
+          <button>Learn more </button>
+          <button>Brochure</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

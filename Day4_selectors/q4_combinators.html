@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combinators Mastery Task</title>
+  <style>
+    /* --- Basic Reset --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f4f4f9;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    nav {
+      background-color: #333;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    nav > ul > li {
+      display: inline;
+      margin-right: 15px;
+      border-bottom: 2px solid #00bcd4;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    nav > ul > li:hover {
+      color: #00bcd4;
+    }
+    nav + h2 {
+      color: #d63384;
+      font-size: 24px;
+      margin: 20px 0 10px;
+    }
+
+    main, aside {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .content-wrapper {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    main {
+      flex: 2;
+      min-width: 300px;
+    }
+
+    aside {
+      flex: 1;
+      background-color: #e8f0fe;
+      min-width: 250px;
+    }
+    main p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    article {
+      margin-bottom: 20px;
+    }
+
+    article h3 {
+      margin-bottom: 8px;
+      color: #0077cc;
+    }
+
+    h3 ~ p {
+      font-style: italic;
+      color: #777;
+    }
+
+    aside h2 {
+      margin-bottom: 10px;
+      color: #1a73e8;
+    }
+
+    aside ul li {
+      list-style-type: disc;
+      margin-left: 20px;
+      margin-bottom: 5px;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li>Home</li>
+      <li>About</li>
+      <li>Services</li>
+      <li>Contact</li>
+    </ul>
+  </nav>
+  <h2>Welcome to Our Digital Learning Hub</h2>
+  <div class="content-wrapper">
+    <main>
+      <h2>Main Content</h2><br>
+
+      <article>
+        <h3>Article 1: Mastering CSS Combinators</h3>
+        <p>CSS combinators are used to explain the relationship between selectors. They allow us to apply styles more precisely based on the hierarchy and positioning of elements.</p>
+        <p>For example, the descendant combinator targets elements nested inside others, while the child combinator focuses only on direct children.</p>
+      </article>
+
+      <article>
+        <h3>Article 2: Why Learn CSS Combinators?</h3>
+        <p>Understanding CSS combinators helps you build cleaner, more efficient stylesheets. Instead of adding extra classes, you can target elements based on their structure.</p>
+        <p>This improves readability, maintainability, and scalability in real-world web projects.</p>
+      </article>
+    </main>
+    <aside>
+      <h2>Recent Posts</h2>
+      <ul>
+        <li>Understanding CSS Selectors</li>
+        <li>Building Responsive Layouts</li>
+        <li>Modern Web Design Trends</li>
+      </ul>
+    </aside>
+  </div>
+
+  <footer>
+    <p>© 2023 Company Name. All rights reserved.</p>
+  </footer>
+</body>
+</html>
