@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominos pizza</title>
+    <style>
+        .navbar{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: white;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            font-family:Arial, Helvetica, sans-serif;
+            
+        }
+        .left-links{
+            font-weight: bold;
+            color: blue;
+        }
+        .nav-links{
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+            color: blue;
+        }
+        .order-btn{
+            padding: 8px 20px;
+            border: 1px solid red;
+            background-color: red;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .title{
+            margin: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .grid{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap:20px;
+            padding:20px 40px;
+            text-align: center;
+            margin: 10px;
+            height:60px;
+        }
+        .card{
+            background: red;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            border-radius: 4px;
+        }
+        .card img{
+            width: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="left-links">
+            <span>Domino's Pizza</span>
+        </div>
+        <div class="nav-links">
+            <span>OUR MENU</span>
+            <span>DOMINO'S STORIES</span>
+            <span>GIFT CARD</span>
+            <span>CORPORATE ENQUIRY</span>
+            <span>CONTACT</span>
+        </div>
+        <button class="order-btn">Download App</button>
+    </div>
+    <div class="title">Order</div>
+    <div class="grid">
+        <div class="card">
+            <img src="pizza.jpg" alt="VEG PIZZA">
+            <h3>VEG PIZZA</h3>
+            <p>A delight for veggie lovers!Choose from our wide range of dellicious vegetarian pizzas,it's softer and tastier</p>
+            <button class="view-btn">VIEW ALL</button>
+        </div>
+        <div class="card">
+            <img src="pizza.jpg" alt="OUR MENU">
+            <h3>OUR MENU</h3>
+            <p>Indulge into mouth-watering taste of Pizza mania range,perfect answer to all your food cravings</p>
+            <button class="view-btn">VIEW ALL</button>
+        </div>
+        <div class="card">
+            <img src="pizza.jpg" alt="OUR MENU">
+            <h3>OUR MENU</h3>
+            <p>Choose your favourite non-veg pizaas from the Domino's Pizza menu.Get fresh non-veg pizza with your choice of crusts & toppings</p>
+            <button class="view-btn">VIEW ALL</button>
+        </div>
+        <div class="card">
+            <img src="pizza.jpg" alt="OUR MENU">
+            <h3>OUR MENU</h3>
+            <p>Choose your favourite non-veg pizaas from the Domino's Pizza menu.Get fresh non-veg pizza with your choice of crusts & toppings</p>
+            <button class="view-btn">VIEW ALL</button>
+        </div>
+        <div class="card">
+            <img src="pizza.jpg" alt="VEG PIZZA">
+            <h3>VEG PIZZA</h3>
+            <p>A delight for veggie lovers!Choose from our wide range of dellicious vegetarian pizzas,it's softer and tastier</p>
+            <button class="view-btn">VIEW ALL</button>
+        </div>
+         <div class="card">
+            <img src="pizza.jpg" alt="OUR MENU">
+            <h3>OUR MENU</h3>
+            <p>Indulge into mouth-watering taste of Pizza mania range,perfect answer to all your food cravings</p>
+            <button class="view-btn">VIEW ALL</button>
+        </div>
+    </div>
+</body>
+</html>
