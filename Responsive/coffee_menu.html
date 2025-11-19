@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive Coffee Menu</title>
+  <style>
+    /* Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #f7e9dd, #fdf6f0);
+      padding: 30px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 3em;
+      font-weight: 700;
+      color: #3b2f2f;
+      letter-spacing: 2px;
+    }
+
+    /* Grid Layout */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    /* Card Styles */
+    .card {
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      text-align: center;
+      overflow: hidden;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 3px solid #d8c1b1;
+    }
+
+    .card h2 {
+      font-size: 1.6em;
+      color: #4a2c2a;
+      margin: 15px 0 5px;
+    }
+
+    .card .price {
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #7a4b37;
+      margin-bottom: 10px;
+    }
+
+    .card .desc {
+      font-size: 0.95em;
+      color: #5b5555;
+      padding: 0 15px 20px;
+      line-height: 1.4;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>☕ Our Coffee Menu</h1>
+  </header>
+
+  <main class="menu-grid">
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085" alt="Cappuccino">
+      <h2>Cappuccino</h2>
+      <p class="price">$49</p>
+      <p class="desc">Rich espresso with steamed milk and a velvety foam topping.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1561882468-9110e03e0f78" alt="Americano">
+      <h2>Americano</h2>
+      <p class="price">$39</p>
+      <p class="desc">Smooth water-diluted espresso for a bold, clean taste.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096" alt="Espresso">
+      <h2>Espresso</h2>
+      <p class="price">$29</p>
+      <p class="desc">A shot of pure aromatic espresso for true coffee lovers.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772" alt="Macchiato">
+      <h2>Macchiato</h2>
+      <p class="price">$45</p>
+      <p class="desc">Strong espresso topped with a small amount of foamed milk.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187" alt="Mocha">
+      <h2>Mocha</h2>
+      <p class="price">$59</p>
+      <p class="desc">Chocolate-flavored latte blended for a sweet indulgence.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93" alt="Latte">
+      <h2>Latte</h2>
+      <p class="price">$49</p>
+      <p class="desc">Silky smooth espresso with steamed milk and light foam.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348" alt="Piccolo Latte">
+      <h2>Piccolo Latte</h2>
+      <p class="price">$35</p>
+      <p class="desc">Mini latte packed with espresso strength and milk richness.</p>
+    </section>
+
+    <section class="card">
+      <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772" alt="Affogato">
+      <h2>Affogato</h2>
+      <p class="price">$69</p>
+      <p class="desc">Vanilla ice cream drowned in hot espresso — a dessert coffee!</p>
+    </section>
+
+  </main>
+
+</body>
+</html>
