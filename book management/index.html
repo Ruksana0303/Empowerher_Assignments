@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Book Management App (Firebase)</title>
+  <style>
+    :root{--bg:#f6f8fb;--card:#fff;--accent:#2563eb}
+    *{box-sizing:border-box}
+    body{font-family:Inter, Roboto, Arial; margin:0; background:var(--bg); color:#111}
+    .app{display:flex; min-height:100vh}
+    /* Sidebar */
+    .sidebar{width:320px; background:#fff; border-right:1px solid #e6e9ee; padding:20px}
+    .sidebar h2{margin:0 0 10px}
+    label{display:block; font-size:13px; margin-top:12px}
+    input[type=text], input[type=number]{width:100%; padding:10px; border:1px solid #dfe6f0; border-radius:6px}
+    button{cursor:pointer}
+    .btn{background:var(--accent); color:#fff; border:none; padding:10px 14px; border-radius:8px; margin-top:14px}
+    .seed{background:#10b981}
+    /* Main */
+    .main{flex:1; padding:22px}
+    .header{display:flex; justify-content:space-between; align-items:center}
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:18px}
+    .card{background:var(--card); border-radius:12px; padding:12px; box-shadow:0 2px 6px rgba(21,32,63,0.04); display:flex; flex-direction:column}
+    .cover{height:160px; border-radius:8px; background:#f3f4f6; background-size:cover; background-position:center}
+    .meta{padding:10px 0; flex:1}
+    .meta h3{margin:0 0 6px; font-size:16px}
+    .meta p{margin:0; color:#555; font-size:14px}
+    .row{display:flex; gap:8px; margin-top:10px}
+    .small{padding:8px 10px; border-radius:8px; border:1px solid #e6e9ee; background:transparent}
+    .danger{border-color:#fca5a5}
+    .muted{color:#6b7280}
+    /* Modal */
+    .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(6,8,15,0.45)}
+    .modal .panel{background:#fff; padding:18px; border-radius:10px; width:480px}
+    /* Responsive */
+    @media (max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.app{flex-direction:column}.sidebar{width:100%; border-right:none; border-bottom:1px solid #e6e9ee}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>Manage Books</h2>
+      <p class="muted">Add a new book — it'll save to Firestore and update in realtime.</p>
+
+      <form id="addForm">
+        <label>Title<input required id="title" type="text" placeholder="Book title"></label>
+        <label>Author<input required id="author" type="text" placeholder="Author name"></label>
+        <label>Price<input required id="price" type="number" step="0.01" placeholder="Price"></label>
+        <label>Image URL<input required id="image" type="text" placeholder="https://...jpg/png"></label>
+        <button class="btn" type="submit">Add Book</button>
+      </form>
+
+      <button id="seedBtn" class="btn seed">Seed sample books (if empty)</button>
+      <p class="muted" style="font-size:13px;margin-top:10px">Remember to replace <strong>firebaseConfig</strong> below with your project's config.
+      Enable Firestore in your Firebase console (Start in test mode while developing).</p>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <div>
+          <h1 style="margin:0">Books</h1>
+          <p class="muted" id="count">0 books</p>
+        </div>
+        <div>
+          <button id="refresh" class="small">Refresh</button>
+        </div>
+      </div>
+
+      <div id="grid" class="grid" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <!-- Modal for details -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <div class="panel">
+      <h3 id="mTitle"></h3>
+      <p id="mAuthor" class="muted"></p>
+      <p id="mPrice"></p>
+      <div style="text-align:right;margin-top:12px"><button id="closeModal" class="small">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Firebase v9 modular CDN -->
+  <script type="module">
+    // ======= REPLACE THIS CONFIG WITH YOUR FIREBASE PROJECT CONFIG ========
+    const firebaseConfig = {
+      apiKey: "REPLACE_ME",
+      authDomain: "REPLACE_ME",
+      projectId: "REPLACE_ME",
+      storageBucket: "REPLACE_ME",
+      messagingSenderId: "REPLACE_ME",
+      appId: "REPLACE_ME"
+    };
+    // ======================================================================
+
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+    import {
+      getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy, getDocs
+    } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const booksCol = collection(db, 'books');
+
+    // DOM refs
+    const grid = document.getElementById('grid');
+    const addForm = document.getElementById('addForm');
+    const seedBtn = document.getElementById('seedBtn');
+    const count = document.getElementById('count');
+    const modal = document.getElementById('modal');
+    const mTitle = document.getElementById('mTitle');
+    const mAuthor = document.getElementById('mAuthor');
+    const mPrice = document.getElementById('mPrice');
+    const closeModal = document.getElementById('closeModal');
+
+    // render helpers
+    function makeCard(docSnap) {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      const card = document.createElement('article');
+      card.className = 'card';
+
+      const cover = document.createElement('div');
+      cover.className = 'cover';
+      cover.style.backgroundImage = `url('${data.coverImageURL || ''}')`;
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = `<h3>${escapeHtml(data.title)}</h3><p class='muted'>by ${escapeHtml(data.author)}</p><p style='margin-top:8px; font-weight:600'>₹${Number(data.price).toFixed(2)}</p>`;
+
+      const row = document.createElement('div');
+      row.className = 'row';
+
+      const upd = document.createElement('button'); upd.className = 'small'; upd.textContent = 'Update Author';
+      upd.onclick = async () => {
+        const newAuthor = prompt('New author name', data.author);
+        if(newAuthor && newAuthor.trim()!==data.author){
+          await updateDoc(doc(db, 'books', id), { author: newAuthor.trim() });
+        }
+      };
+
+      const del = document.createElement('button'); del.className = 'small danger'; del.textContent = 'Delete';
+      del.onclick = async () => {
+        if(confirm('Delete this book?')){
+          await deleteDoc(doc(db, 'books', id));
+        }
+      };
+
+      const view = document.createElement('button'); view.className = 'small'; view.textContent = 'View Details';
+      view.onclick = () => {
+        mTitle.textContent = data.title;
+        mAuthor.textContent = 'Author: ' + data.author;
+        mPrice.textContent = 'Price: ₹' + Number(data.price).toFixed(2);
+        modal.style.display = 'flex';
+      };
+
+      row.appendChild(upd); row.appendChild(del); row.appendChild(view);
+
+      card.appendChild(cover); card.appendChild(meta); card.appendChild(row);
+      return card;
+    }
+
+    // basic HTML escape to avoid injection in demo
+    function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+    // real-time listener
+    const q = query(booksCol, orderBy('title'));
+    onSnapshot(q, (snapshot) => {
+      grid.innerHTML = '';
+      snapshot.forEach(docSnap => {
+        const card = makeCard(docSnap);
+        grid.appendChild(card);
+      });
+      count.textContent = snapshot.size + ' book' + (snapshot.size===1?'':'s');
+    }, (err) => console.error('Realtime error', err));
+
+    // add book
+    addForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const author = document.getElementById('author').value.trim();
+      const price = Number(document.getElementById('price').value) || 0;
+      const image = document.getElementById('image').value.trim();
+      try{
+        await addDoc(booksCol, { title, author, price, coverImageURL: image });
+        addForm.reset();
+      }catch(err){ console.error(err); alert('Failed to add book') }
+    });
+
+    // seed sample data if empty
+    async function seedIfEmpty(){
+      const snap = await getDocs(booksCol);
+      if(snap.empty){
+        const samples = [
+          { title:'The Pragmatic Programmer', author:'Andrew Hunt', price:499, coverImageURL:'https://images.unsplash.com/photo-1522120695541-7c8b1a0c6d4d?auto=format&fit=crop&w=600&q=60' },
+          { title:'Clean Code', author:'Robert C. Martin', price:599, coverImageURL:'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=60' },
+          { title:'You Don\'t Know JS', author:'Kyle Simpson', price:299, coverImageURL:'https://images.unsplash.com/photo-1496104679561-38b9e44a5f11?auto=format&fit=crop&w=600&q=60' },
+          { title:'Deep Work', author:'Cal Newport', price:349, coverImageURL:'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=600&q=60' },
+          { title:'Atomic Habits', author:'James Clear', price:399, coverImageURL:'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?auto=format&fit=crop&w=600&q=60' }
+        ];
+        for (const b of samples){ await addDoc(booksCol, b); }
+        alert('Seeded sample books')
+      } else {
+        alert('Collection not empty — skipping seed')
+      }
+    }
+
+    seedBtn.addEventListener('click', seedIfEmpty);
+
+    // small UX
+    closeModal.onclick = () => modal.style.display='none';
+    window.onclick = (e) => { if(e.target===modal) modal.style.display='none' };
+    document.getElementById('refresh').onclick = async () => { /* manual refresh forces nothing because realtime */ alert('Realtime updates are enabled — UI syncs automatically') };
+
+  </script>
+</body>
+</html>
