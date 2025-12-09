@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-Powered Daily Time Tracker & Analytics</title>
+  <meta name="description" content="Log daily activities in minutes, analyze any day with charts. Firebase Auth + Firestore + Chart.js" />
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9ca3af;--accent:#06b6d4;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:linear-gradient(180deg,#071028 0%, #071931 60%);color:#e6eef6;min-height:100vh}
+    .container{max-width:1100px;margin:28px auto;padding:18px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    h1{margin:0;font-size:20px}
+    .auth{display:flex;gap:8px;align-items:center}
+    button{cursor:pointer;border:0;border-radius:8px;padding:8px 12px;background:var(--accent);color:#042f34;font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px}
+
+    .app{display:grid;grid-template-columns:320px 1fr;gap:20px}
+    @media (max-width:880px){.app{grid-template-columns:1fr}}
+
+    /* Sidebar / Form */
+    .sidebar{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    label{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .muted{color:var(--muted)}
+
+    /* Main area */
+    .main{padding:16px}
+    .topbar{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px; border-radius:12px; margin-bottom:12px; box-shadow:0 6px 18px rgba(0,0,0,0.4)}
+
+    .progress{height:14px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#7c3aed);width:0%}
+
+    .activities{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media (max-width:640px){.activities{grid-template-columns:1fr}}
+    .activity{background:var(--glass);padding:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+    .actions{display:flex;gap:8px}
+    .small{padding:6px 8px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+
+    /* No data view */
+    .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+    .illustration{font-size:48px;margin-bottom:12px}
+
+    /* Charts */
+    .charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:900px){.charts{grid-template-columns:1fr}}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>AI Time Tracker — Daily Analytics</h1>
+        <div class="muted" style="font-size:13px;margin-top:6px">Log minutes, analyze your day. Firebase + Chart.js demo.</div>
+      </div>
+      <div class="auth">
+        <div id="userInfo" class="muted">Not signed in</div>
+        <button id="signInBtn">Sign in with Google</button>
+        <button id="signOutBtn" class="btn-ghost" style="display:none">Sign out</button>
+      </div>
+    </header>
+
+    <div class="app">
+      <!-- Sidebar: date picker + add form -->
+      <aside class="sidebar">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <strong>Track activities</strong>
+          <span class="muted" id="currentDateLabel"></span>
+        </div>
+
+        <label>Date
+          <input id="dateInput" type="date" />
+        </label>
+
+        <div class="card" style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <div class="muted" style="font-size:13px">Remaining</div>
+              <div id="remainingText" style="font-weight:700;font-size:16px">1440 minutes</div>
+            </div>
+            <div style="width:160px">
+              <div class="progress" aria-hidden><i id="progBar"></i></div>
+            </div>
+          </div>
+          <div class="muted" style="font-size:12px">Total logged: <span id="totalLogged">0</span> min • Activities: <span id="activityCount">0</span></div>
+        </div>
+
+        <form id="addForm" style="margin-top:12px">
+          <label>Activity title
+            <input id="title" type="text" placeholder="e.g., Deep work" required />
+          </label>
+          <label>Category
+            <select id="category">
+              <option>Work</option>
+              <option>Study</option>
+              <option>Sleep</option>
+              <option>Entertainment</option>
+              <option>Exercise</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>Minutes
+            <input id="minutes" type="number" min="1" max="1440" placeholder="Minutes" required />
+          </label>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="" type="submit">Add activity</button>
+            <button id="seedBtn" type="button" class="btn-ghost">Seed sample</button>
+          </div>
+          <div id="formMsg" class="muted" style="margin-top:8px;font-size:13px"></div>
+        </form>
+
+        <div style="margin-top:18px">
+          <button id="analyseBtn" style="width:100%" disabled>Analyse</button>
+        </div>
+      </aside>
+
+      <!-- Main content: list + analytics -->
+      <main class="main">
+        <div id="listArea">
+          <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+            <strong>Activities</strong>
+            <div class="muted" style="font-size:13px">Manage your day's items</div>
+          </div>
+
+          <div id="activitiesContainer" style="margin-top:12px"></div>
+        </div>
+
+        <div id="dashboardArea" style="margin-top:12px">
+          <div id="noData" class="card empty" style="display:none">
+            <div class="illustration">📭</div>
+            <h3>No data available</h3>
+            <p class="muted">Choose a date and start logging activities. When you have activity minutes for that date you'll be able to analyse the day.</p>
+            <div style="margin-top:12px"><button id="ctaAdd" class="small">Start logging your day now</button></div>
+          </div>
+
+          <div id="chartsPanel" style="display:none">
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="muted">Summary for <span id="summaryDate"></span></div>
+                  <h2 id="summaryTotal">0 min</h2>
+                </div>
+                <div style="text-align:right">
+                  <div class="muted">Activities</div>
+                  <div id="summaryCount" style="font-weight:700">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="charts" style="margin-top:12px">
+              <div class="card"><canvas id="pieChart" height="220"></canvas></div>
+              <div class="card"><canvas id="barChart" height="220"></canvas></div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <strong>Activity list</strong>
+              <div id="chartList" style="margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+
+        <footer>Built with Firebase & Chart.js • Replace <code>firebaseConfig</code> in the code with your project config.</footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- Firebase + Chart.js CDN -->
+  <script type="module">
+    // ====== Replace with your firebase config ======
+    const firebaseConfig = {
+      apiKey: "REPLACE_ME",
+      authDomain: "REPLACE_ME",
+      projectId: "REPLACE_ME",
+      storageBucket: "REPLACE_ME",
+      messagingSenderId: "REPLACE_ME",
+      appId: "REPLACE_ME"
+    };
+    // ==============================================
+
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+    import {
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
+    } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
+    import {
+      getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, onSnapshot, query, orderBy, getDocs
+    } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
+
+    // Chart.js (not modular) loaded via dynamic import of CDN script tag
+    function loadChartJs(){
+      return new Promise((res,rej)=>{
+        if(window.Chart) return res(window.Chart);
+        const s=document.createElement('script');
+        s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+        s.onload=()=>res(window.Chart);
+        s.onerror=rej; document.head.appendChild(s);
+      });
+    }
+
+    // init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM refs
+    const signInBtn = document.getElementById('signInBtn');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const userInfo = document.getElementById('userInfo');
+    const dateInput = document.getElementById('dateInput');
+    const currentDateLabel = document.getElementById('currentDateLabel');
+    const remainingText = document.getElementById('remainingText');
+    const totalLogged = document.getElementById('totalLogged');
+    const activityCount = document.getElementById('activityCount');
+    const progBar = document.getElementById('progBar');
+    const addForm = document.getElementById('addForm');
+    const activitiesContainer = document.getElementById('activitiesContainer');
+    const analyseBtn = document.getElementById('analyseBtn');
+    const noData = document.getElementById('noData');
+    const chartsPanel = document.getElementById('chartsPanel');
+    const summaryDate = document.getElementById('summaryDate');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const summaryCount = document.getElementById('summaryCount');
+    const pieCanvas = document.getElementById('pieChart');
+    const barCanvas = document.getElementById('barChart');
+    const chartList = document.getElementById('chartList');
+    const seedBtn = document.getElementById('seedBtn');
+    const formMsg = document.getElementById('formMsg');
+    const ctaAdd = document.getElementById('ctaAdd');
+
+    let currentUser = null;
+    let unsubscribeActivities = null;
+    let pieChart = null, barChart = null;
+
+    // helpers
+    function todayISO(){ const d=new Date(); return d.toISOString().slice(0,10); }
+    function formatDate(d){ return d; }
+
+    // init date picker to today
+    dateInput.value = todayISO();
+    currentDateLabel.textContent = dateInput.value;
+
+    // Auth handlers
+    signInBtn.onclick = async () => {
+      const provider = new GoogleAuthProvider();
+      try{ await signInWithPopup(auth, provider); }catch(e){ alert('Sign-in failed: '+e.message) }
+    };
+    signOutBtn.onclick = async () => { await signOut(auth); };
+
+    onAuthStateChanged(auth, user => {
+      currentUser = user;
+      if(user){
+        userInfo.textContent = user.displayName || user.email;
+        signInBtn.style.display = 'none'; signOutBtn.style.display = '';
+        startListeners();
+      } else {
+        userInfo.textContent = 'Not signed in';
+        signInBtn.style.display = ''; signOutBtn.style.display = 'none';
+        stopListeners();
+        showNoDataView();
+      }
+    });
+
+    // Listen to date change
+    dateInput.addEventListener('change', () => {
+      currentDateLabel.textContent = dateInput.value;
+      if(currentUser) restartActivitiesListener();
+      else showNoDataView();
+    });
+
+    // Start / stop listeners
+    function startListeners(){ restartActivitiesListener(); }
+    function stopListeners(){ if(unsubscribeActivities) unsubscribeActivities(); unsubscribeActivities = null; }
+
+    function activitiesCollectionRef(){
+      const uid = currentUser.uid;
+      return collection(db, `users/${uid}/days/${dateInput.value}/activities`);
+    }
+
+    function restartActivitiesListener(){
+      if(!currentUser) return;
+      if(unsubscribeActivities) unsubscribeActivities();
+      const col = activitiesCollectionRef();
+      const q = query(col, orderBy('createdAt'));
+      unsubscribeActivities = onSnapshot(q, (snap) => {
+        const items = [];
+        snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+        renderActivities(items);
+      }, err => { console.error(err); });
+    }
+
+    // Render activities + summary
+    function renderActivities(items){
+      activitiesContainer.innerHTML = '';
+      if(items.length===0){
+        showNoDataView();
+      } else {
+        hideNoDataView();
+        items.forEach(it => {
+          const el = document.createElement('div'); el.className='activity';
+          el.innerHTML = `<div><strong>${escapeHtml(it.title)}</strong><div class='muted' style='font-size:13px'>${escapeHtml(it.category)} • ${it.minutes} min</div></div>`;
+          const actions = document.createElement('div'); actions.className='actions';
+          const edit = document.createElement('button'); edit.className='small'; edit.textContent='Edit';
+          edit.onclick = () => editActivity(it);
+          const del = document.createElement('button'); del.className='small'; del.textContent='Delete';
+          del.onclick = () => deleteActivity(it.id);
+          actions.appendChild(edit); actions.appendChild(del);
+          el.appendChild(actions);
+          activitiesContainer.appendChild(el);
+        });
+        // compute totals
+        const total = items.reduce((s,i)=>s + Number(i.minutes||0),0);
+        const count = items.length;
+        updateSummary(total, count, items);
+      }
+    }
+
+    function updateSummary(total, count, items){
+      const remaining = Math.max(0, 1440 - total);
+      remainingText.textContent = remaining + ' minutes left';
+      totalLogged.textContent = total;
+      activityCount.textContent = count;
+      const pct = Math.min(100, Math.round((total/1440)*100));
+      progBar.style.width = pct + '%';
+
+      // Analyse button rules: enabled when total > 0 and total <= 1440
+      analyseBtn.disabled = !(total > 0 && total <= 1440);
+
+      // prepare chart data if dashboard visible
+      if(chartsPanel.style.display !== 'none'){
+        renderCharts(items);
+      }
+    }
+
+    // Show/hide no-data
+    function showNoDataView(){
+      noData.style.display = '';
+      chartsPanel.style.display = 'none';
+      activitiesContainer.innerHTML = '<div class="muted">No activities for this date yet</div>';
+      totalLogged.textContent='0'; activityCount.textContent='0'; progBar.style.width='0%'; remainingText.textContent='1440 minutes left'; analyseBtn.disabled=true;
+    }
+    function hideNoDataView(){ noData.style.display='none'; chartsPanel.style.display='none'; }
+
+    // Add activity
+    addForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); formMsg.textContent='';
+      if(!currentUser){ alert('Please sign in'); return; }
+      const title = document.getElementById('title').value.trim();
+      const category = document.getElementById('category').value;
+      const minutes = Number(document.getElementById('minutes').value);
+      if(!title || !minutes || minutes<=0){ formMsg.textContent='Please enter valid values.'; return; }
+
+      // read current total from existing DOM (fast) — safer approach: calculate from server snapshot
+      const currentTotal = Number(totalLogged.textContent || 0);
+      if(currentTotal + minutes > 1440){ formMsg.textContent = 'Adding this exceeds 1440 minutes for the day.'; return; }
+
+      try{
+        await addDoc(activitiesCollectionRef(), {
+          title, category, minutes, createdAt: Date.now()
+        });
+        addForm.reset(); formMsg.textContent='Added.';
+      }catch(err){ console.error(err); formMsg.textContent='Failed to add: '+err.message }
+    });
+
+    // Edit activity - simple prompt-based
+    async function editActivity(item){
+      const newTitle = prompt('Title', item.title); if(newTitle===null) return;
+      const newCategory = prompt('Category', item.category||'Other'); if(newCategory===null) return;
+      const newMinutes = prompt('Minutes', String(item.minutes)); if(newMinutes===null) return;
+      const m = Number(newMinutes);
+      if(!m || m<=0){ alert('Invalid minutes'); return; }
+
+      // compute prospective total: currentTotal - item.minutes + m
+      const currentTotal = Number(totalLogged.textContent||0);
+      const prospective = currentTotal - Number(item.minutes||0) + m;
+      if(prospective > 1440){ alert('This edit would exceed 1440 minutes for the day'); return; }
+
+      try{
+        await updateDoc(doc(db, `users/${currentUser.uid}/days/${dateInput.value}/activities`, item.id), {
+          title:newTitle, category:newCategory, minutes:m
+        });
+      }catch(e){ alert('Failed to update: '+e.message) }
+    }
+
+    async function deleteActivity(id){ if(!confirm('Delete activity?')) return; try{ await deleteDoc(doc(db, `users/${currentUser.uid}/days/${dateInput.value}/activities`, id)); }catch(e){ alert('Delete failed') } }
+
+    analyseBtn.onclick = async () => {
+      
+      if(!currentUser) return alert('Sign in first');
+      const col = activitiesCollectionRef();
+      const snap = await getDocs(col);
+      const items = []; snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+      if(items.length===0) return alert('No data for this date');
+    
+      showDashboardFor(items);
+    };
+
+    function showDashboardFor(items){
+      noData.style.display='none';
+      chartsPanel.style.display='block';
+      summaryDate.textContent = dateInput.value;
+      const total = items.reduce((s,i)=>s + Number(i.minutes||0),0);
+      summaryTotal.textContent = total + ' min (' + (total/60).toFixed(2) + ' h)';
+      summaryCount.textContent = items.length;
+      renderCharts(items);
+      
+      chartList.innerHTML = '';
+      items.sort((a,b)=>b.minutes-a.minutes).forEach(it=>{
+        const el = document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.padding='6px 0'; el.innerHTML = `<div><strong>${escapeHtml(it.title)}</strong> <span class='muted' style='font-size:13px'>• ${escapeHtml(it.category)}</span></div><div class='muted'>${it.minutes} min</div>`;
+        chartList.appendChild(el);
+      });
+    }
+
+    async function renderCharts(items){
+      await loadChartJs();
+     
+      const byCat = items.reduce((acc,i)=>{ acc[i.category]=(acc[i.category]||0)+Number(i.minutes||0); return acc }, {});
+      const labels = Object.keys(byCat);
+      const data = labels.map(l => byCat[l]);
+
+      if(pieChart) pieChart.destroy(); if(barChart) barChart.destroy();
+
+      pieChart = new Chart(pieCanvas, { type:'pie', data:{ labels, datasets:[{ data, label:'Minutes' }]}, options:{ plugins:{ legend:{ position:'bottom' } }}});
+
+      const top = items.slice().sort((a,b)=>b.minutes-a.minutes).slice(0,8);
+      const bLabels = top.map(t=>t.title);
+      const bData = top.map(t=>t.minutes);
+      barChart = new Chart(barCanvas, { type:'bar', data:{ labels:bLabels, datasets:[{ label:'Minutes', data:bData, borderRadius:6 }]}, options:{ indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true } }}});
+    }
+
+    seedBtn.onclick = async () => {
+      if(!currentUser) return alert('Sign in first');
+      const samples = [
+        { title:'Sleep', category:'Sleep', minutes:480 },
+        { title:'Work - Project', category:'Work', minutes:300 },
+        { title:'Study', category:'Study', minutes:120 },
+        { title:'Exercise', category:'Exercise', minutes:60 },
+        { title:'Leisure', category:'Entertainment', minutes:120 }
+      ];
+      
+      let sum = samples.reduce((s,i)=>s+i.minutes,0);
+      if(sum>1440) samples.length=0;
+      try{
+        for(const s of samples) await addDoc(activitiesCollectionRef(), { ...s, createdAt: Date.now() });
+        alert('Seeded sample activities');
+      }catch(e){ alert('Seed failed: '+e.message) }
+    };
+
+    ctaAdd.onclick = () => { document.getElementById('title').focus(); };
+
+    function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+    function docRefFor(id){ return doc(db, `users/${currentUser.uid}/days/${dateInput.value}/activities`, id); }
+
+  </script>
+</body>
+</html>
