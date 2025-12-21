@@ -2,7 +2,7 @@
 
 ## 🤖 AI Tools Used
 **Replit Agent** was used to generate the initial structure and style of this portfolio.
-
+cd 
 ## 📝 Manual Improvements
 While the AI provided a solid foundation, I manually refined the following to ensure quality and responsiveness:
 
