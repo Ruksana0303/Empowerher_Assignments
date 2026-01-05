@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tailwind CSS Basics Exploration</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+  <nav class="bg-white shadow-md p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+    <h1 class="text-xl font-bold">Tailwind UI</h1>
+
+    <div class="flex flex-col md:flex-row gap-4">
+      <a href="#" class="hover:text-blue-600">Home</a>
+      <a href="#" class="hover:text-blue-600">Features</a>
+      <a href="#" class="hover:text-blue-600">Contact</a>
+    </div>
+  </nav>
+
+ 
+  <section class="p-8 text-center">
+    <h2 class="text-xl md:text-3xl lg:text-5xl font-bold 
+               bg-gradient-to-r from-blue-500 to-purple-500 
+               text-transparent bg-clip-text">
+      Tailwind CSS Exploration
+    </h2>
+
+    <div class="mt-6 flex justify-center">
+      <img 
+        src="https://picsum.photos/400/300" 
+        alt="Hero Image"
+        class="rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+      />
+    </div>
+  </section>
+
+  <div class="text-center my-6">
+    <button class="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300 active:bg-gray-400 transition">
+      Click Me
+    </button>
+  </div>
+
+  
+  <ul class="list-disc list-inside pl-5 max-w-md mx-auto hover:text-blue-600">
+    <li>Utility First Design</li>
+    <li>Responsive Layout</li>
+    <li>Hover & Focus Effects</li>
+  </ul>
+
+ 
+  <section class="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+   
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <img src="https://picsum.photos/300/200" class="rounded mb-3" />
+      <h3 class="font-bold text-lg">Fast Styling</h3>
+      <p class="text-gray-600">Build UI quickly using Tailwind utilities.</p>
+      <button class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+        Learn More
+      </button>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <img src="https://picsum.photos/301/200" class="rounded mb-3" />
+      <h3 class="font-bold text-lg">Responsive</h3>
+      <p class="text-gray-600">Mobile-first responsive design system.</p>
+      <button class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+        Learn More
+      </button>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <img src="https://picsum.photos/302/200" class="rounded mb-3" />
+      <h3 class="font-bold text-lg">Customizable</h3>
+      <p class="text-gray-600">Easily customizable and scalable.</p>
+      <button class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+        Learn More
+      </button>
+    </div>
+
+  </section>
+
+ 
+  <section class="p-8 overflow-x-auto">
+    <table class="w-full bg-white border border-gray-300">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border p-2">Name</th>
+          <th class="border p-2">Role</th>
+          <th class="border p-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="even:bg-gray-100 hover:bg-gray-200">
+          <td class="border p-2">Alex</td>
+          <td class="border p-2">Developer</td>
+          <td class="border p-2">Active</td>
+        </tr>
+        <tr class="even:bg-gray-100 hover:bg-gray-200">
+          <td class="border p-2">Sam</td>
+          <td class="border p-2">Designer</td>
+          <td class="border p-2">Inactive</td>
+        </tr>
+        <tr class="even:bg-gray-100 hover:bg-gray-200">
+          <td class="border p-2">John</td>
+          <td class="border p-2">Tester</td>
+          <td class="border p-2">Active</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="p-8 max-w-md mx-auto bg-white rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+
+    <form class="space-y-4">
+      <input 
+        type="text" 
+        placeholder="Name"
+        class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+
+      <input 
+        type="email" 
+        placeholder="Email"
+        class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+
+      <input 
+        type="password" 
+        placeholder="Password"
+        class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+
+      <button class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+        Submit
+      </button>
+    </form>
+  </section>
+
+</body>
+</html>
