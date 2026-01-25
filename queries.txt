@@ -1,0 +1,97 @@
+1. Create table
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    age INTEGER,
+    course TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+output: create table
+
+2.Insert data
+INSERT INTO students (name, email, age, course) VALUES
+('Aarav Sharma', 'aarav.sharma@gmail.com', 21, 'Computer Science'),
+('Priya Verma', 'priya.verma@gmail.com', 22, 'Information Technology'),
+('Rohan Patel', 'rohan.patel@gmail.com', 20, 'Computer Science'),
+('Sneha Iyer', 'sneha.iyer@gmail.com', 23, 'Data Science'),
+('Karthik Reddy', 'karthik.reddy@gmail.com', 19, 'Information Technology'),
+('Neha Singh', 'neha.singh@gmail.com', 24, 'Data Science'),
+('Ankit Kumar', 'ankit.kumar@gmail.com', 18, 'Computer Science');
+
+
+3.Read data
+  1.Fetch all students
+    SELECT * FROM students;
+   output:  
+ id |     name          |          email                 | age | course                   | created_at
+----+-------------------+--------------------------------+-----+--------------------------+-------------------------
+ 1  | Aarav Sharma      | aarav.sharma@gmail.com         | 21  | Computer Science         | 2026-01-22 11:10:00
+ 2  | Priya Verma       | priya.verma@gmail.com          | 22  | Information Technology   | 2026-01-22 11:10:00
+ 3  | Rohan Patel       | rohan.patel@gmail.com          | 20  | Computer Science         | 2026-01-22 11:10:00
+ 4  | Sneha Iyer        | sneha.iyer@gmail.com           | 23  | Data Science             | 2026-01-22 11:10:00
+ 5  | Karthik Reddy     | karthik.reddy@gmail.com        | 19  | Information Technology   | 2026-01-22 11:10:00
+ 6  | Neha Singh        | neha.singh@gmail.com           | 24  | Data Science             | 2026-01-22 11:10:00
+ 7  | Ankit Kumar       | ankit.kumar@gmail.com          | 18  | Computer Science         | 2026-01-22 11:10:00
+
+  
+2.Fetch students older than 20
+    SELECT * FROM students WHERE age > 20;
+ouput:
+ id | name           | email                    | age | course                 | created_at
+----+----------------+--------------------------+-----+------------------------+-------------------------
+ 1  | Aarav Sharma   | aarav.sharma@gmail.com   | 21  | Computer Science       | 2026-01-22 11:10:00
+ 2  | Priya Verma    | priya.verma@gmail.com    | 22  | Information Technology | 2026-01-22 11:10:00
+ 4  | Sneha Iyer     | sneha.iyer@gmail.com     | 23  | Data Science           | 2026-01-22 11:10:00
+ 6  | Neha Singh     | neha.singh@gmail.com     | 24  | Data Science           | 2026-01-22 11:10:00
+
+  3.Fetch only name and email columns
+    SELECT name, email FROM students;
+output: 
+     name           | email
+--------------------+-------------------------
+ Aarav Sharma       | aarav.sharma@gmail.com
+ Priya Verma        | priya.verma@gmail.com
+ Rohan Patel        | rohan.patel@gmail.com
+ Sneha Iyer         | sneha.iyer@gmail.com
+ Karthik Reddy      | karthik.reddy@gmail.com
+ Neha Singh         | neha.singh@gmail.com
+ Ankit Kumar        | ankit.kumar@gmail.com
+
+  4.Fetch students enrolled in a specific course
+    SELECT * FROM students WHERE course = 'Computer Science';
+output:
+ id | name          | email                   | age | course           | created_at
+----+---------------+-------------------------+-----+------------------+-------------------------
+ 1  | Aarav Sharma  | aarav.sharma@gmail.com  | 21  | Computer Science | 2026-01-22 11:10:00
+ 3  | Rohan Patel   | rohan.patel@gmail.com   | 20  | Computer Science | 2026-01-22 11:10:00
+ 7  | Ankit Kumar   | ankit.kumar@gmail.com   | 18  | Computer Science | 2026-01-22 11:10:00
+
+
+4.Update queries
+   1.Update the age of one student
+     UPDATE students
+	SET age = 25
+	WHERE id = 1;
+   output: UPDATE 1
+
+   2.Update the course for all students enrolled in one course
+     UPDATE students
+	SET course = 'Artificial Intelligence'
+	WHERE course = 'Data Science';
+   output: UPDATE 2
+
+5.Delete queires
+   1.Delete one student using id
+     DELETE FROM students
+	WHERE id = 7;
+   OUTPUT: DELETE 1
+
+   2.Delete all students below a certain age
+     DELETE FROM students
+	WHERE age < 20;
+   OUTPUT:DELETE 1
+
+
+
+
